@@ -490,7 +490,9 @@ m5pm1_err_t M5PM1::begin(i2c_port_t port, uint8_t addr, int sda, int scl, uint32
         .flags =
             {
                 .enable_internal_pullup = true,
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 4, 0)
                 .allow_pd               = false,
+#endif
             },
     };
 
