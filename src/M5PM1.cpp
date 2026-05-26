@@ -491,7 +491,7 @@ m5pm1_err_t M5PM1::begin(i2c_port_t port, uint8_t addr, int sda, int scl, uint32
             {
                 .enable_internal_pullup = true,
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 4, 0)
-                .allow_pd               = false,
+                .allow_pd = false,
 #endif
             },
     };
@@ -1710,6 +1710,11 @@ bool M5PM1::_writeReg16(uint8_t reg, uint16_t value)
 
 bool M5PM1::_readReg(uint8_t reg, uint8_t* value)
 {
+    if (value == nullptr) {
+        M5PM1_LOG_E(TAG_I2C, "Read  Reg[0x%02X] failed: null value", reg);
+        return false;
+    }
+
     _checkAutoWake();
     bool success = false;
     for (int attempt = 0; attempt < M5PM1_I2C_RETRY_COUNT; ++attempt) {
@@ -1768,6 +1773,11 @@ bool M5PM1::_readReg(uint8_t reg, uint8_t* value)
 
 bool M5PM1::_readReg16(uint8_t reg, uint16_t* value)
 {
+    if (value == nullptr) {
+        M5PM1_LOG_E(TAG_I2C, "Read16 Reg[0x%02X] failed: null value", reg);
+        return false;
+    }
+
     _checkAutoWake();
     bool success = false;
     for (int attempt = 0; attempt < M5PM1_I2C_RETRY_COUNT; ++attempt) {
@@ -1826,6 +1836,11 @@ bool M5PM1::_readReg16(uint8_t reg, uint16_t* value)
 
 bool M5PM1::_writeBytes(uint8_t reg, const uint8_t* data, uint8_t len)
 {
+    if (data == nullptr && len > 0) {
+        M5PM1_LOG_E(TAG_I2C, "WriteBytes Reg[0x%02X] len=%d failed: null data", reg, len);
+        return false;
+    }
+
     _checkAutoWake();
     bool success = false;
     for (int attempt = 0; attempt < M5PM1_I2C_RETRY_COUNT; ++attempt) {
@@ -1885,6 +1900,11 @@ bool M5PM1::_writeBytes(uint8_t reg, const uint8_t* data, uint8_t len)
 
 bool M5PM1::_readBytes(uint8_t reg, uint8_t* data, uint8_t len)
 {
+    if (data == nullptr && len > 0) {
+        M5PM1_LOG_E(TAG_I2C, "ReadBytes  Reg[0x%02X] len=%d failed: null data", reg, len);
+        return false;
+    }
+
     _checkAutoWake();
     bool success = false;
     for (int attempt = 0; attempt < M5PM1_I2C_RETRY_COUNT; ++attempt) {
